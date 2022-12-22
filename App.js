@@ -1,20 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react'
+import { Provider } from 'react-redux';
+import { AppRegistry } from 'react-native';
+import Navigator from './src/Navigator'
+import {name as appName} from './app.json';
+import * as Font from 'expo-font';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import storeConfig from './src/store/storeConfig';
+
+let customFonts = {
+    'shelter': require('./assets/fonts/shelter.otf')
+};
+
+const store = storeConfig();
+
+
+export default class Redux extends React.Component {
+    state = {
+        fontsLoaded: false,
+    };
+
+    async _loadFontsAsync() {
+        await Font.loadAsync(customFonts);
+        this.setState({ fontsLoaded: true });
+    }
+
+    componentDidMount() {
+        this._loadFontsAsync();
+    }
+
+    render() {
+        if (!this.state.fontsLoaded) {
+            return null;
+            }
+        return (
+            <Provider store={store}>
+                <Navigator/>
+            </Provider>
+        )
+    }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+AppRegistry.registerComponent(appName, () => Redux);
