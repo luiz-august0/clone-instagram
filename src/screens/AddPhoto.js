@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { addPost } from '../store/actions/posts'
+import { withNavigation } from 'react-navigation'
 import {
     View,
     Text,
@@ -8,10 +11,9 @@ import {
     Image,
     Dimensions,
     Platform,
-    ScrollView,
-    Alert
+    ScrollView
 } from 'react-native'
-import ImagePicker from 'react-native-image-picker'
+import * as ImagePicker from 'expo-image-picker'
 
 class AddPhoto extends Component {
     state = {
@@ -19,20 +21,34 @@ class AddPhoto extends Component {
         comment: ''
     }
 
-    pickImage = () => {
-        ImagePicker.showImagePicker({
-            title: 'Escolha a imagem',
-            maxHeight: 600,
-            maxWidth: 800
-        }, res => {
-            if (!res.didCancel) {
-                this.setState({ image: { uri: res.uri, base64: res.data } })
-            }
+    pickImage = async () => {
+        let res = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
         })
+
+        if (!res.canceled) {
+            this.setState({ image: { uri: res.assets[0].uri, base64: res.assets[0].data } })
+        }
+
     }
 
     save = async () => {
-        Alert.alert('Imagem adicionada!', this.state.comment)
+        this.props.onAddPost({
+            id: Math.random(),
+            nickname: this.props.name,
+            email: this.props.email,
+            image: this.state.image,
+            comments: [{
+                nickname: this.props.name,
+                comment: this.state.comment
+            }]
+        })
+
+        this.setState({ image: null, comment: '' })
+        this.props.navigation.navigate('Feed')
     }
 
     render() {
@@ -43,7 +59,7 @@ class AddPhoto extends Component {
                     <View style={styles.imageContainer}>
                         <Image source={this.state.image} style={styles.image}/>
                     </View>
-                    <TouchableOpacity 
+                    <TouchableOpacity onPress={this.pickImage}
                         style={styles.buttom}>
                         <Text style={styles.buttomText}>Escolha a foto</Text>
                     </TouchableOpacity>
@@ -96,4 +112,17 @@ const styles = StyleSheet.create({
     }
 })
 
-export default AddPhoto;
+const mapStateToProps = ({ user }) => {
+    return {
+        email: user.email,
+        name: user.name
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onAddPost: post => dispatch(addPost(post))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(AddPhoto))

@@ -31,7 +31,7 @@ export default class Redux extends React.Component {
     render() {
         if (!this.state.fontsLoaded) {
             return null;
-            }
+        }
         return (
             <Provider store={store}>
                 <Navigator/>

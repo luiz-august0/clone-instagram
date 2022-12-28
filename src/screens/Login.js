@@ -13,7 +13,7 @@ import {
 
 class Login extends Component {
     state = {
-        name: 'temporario',
+        name: 'Teste',
         email: '',
         password: ''
     }
@@ -31,7 +31,7 @@ class Login extends Component {
                     value={this.state.email}
                     onChangeText={email => this.setState({ email })}/>
                 <TextInput placeholder='Senha' style={styles.input}
-                    secureTextEntry={true} value={this.state.senha}
+                    secureTextEntry={true} value={this.state.password}
                     onChangeText={password => this.setState({ password })}/>
                 <TouchableOpacity onPress={this.login} style={styles.buttom}>
                     <Text style={styles.buttomText}>Login</Text>
