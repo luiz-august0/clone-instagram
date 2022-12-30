@@ -4,6 +4,9 @@ import { AppRegistry } from 'react-native';
 import Navigator from './src/Navigator'
 import {name as appName} from './app.json';
 import * as Font from 'expo-font';
+import Axios from 'axios';
+
+Axios.defaults.baseURL = 'https://cloneinstagram-e11cc-default-rtdb.firebaseio.com/'
 
 import storeConfig from './src/store/storeConfig';
 
