@@ -24,6 +24,7 @@ class AddPhoto extends Component {
         comment: ''
     }
 
+
     pickImage = async () => {
         if(!this.props.name) {
             Alert.alert('Falha!', noUser)
@@ -33,12 +34,13 @@ class AddPhoto extends Component {
         let res = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
+            base64: true,
             aspect: [4, 3],
             quality: 1,
         })
 
         if (!res.canceled) {
-            this.setState({ image: { uri: res.assets[0].uri, base64: res.assets[0].data } })
+            this.setState({ image: { uri: res.assets[0].uri, type: res.assets[0].type } })
         }
 
     }
