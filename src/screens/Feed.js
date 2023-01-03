@@ -4,8 +4,12 @@ import { StyleSheet, FlatList, View } from 'react-native'
 import Header from '../components/Header'
 import Post from '../components/Post'
 import { withNavigation } from 'react-navigation'
+import { getPosts } from '../store/actions/posts' 
 
 class Feed extends Component {
+    componentDidMount = () => {
+        this.props.onGetPosts()
+    }
 
     render() {
         return (
@@ -36,4 +40,10 @@ const mapStateToProps = ({ posts }) => {
     }
 }
 
-export default connect(mapStateToProps)(withNavigation(Feed))
+export const mapDispatchToProps = dispatch => {
+    return {
+        onGetPosts: () => dispatch(getPosts())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(Feed))
