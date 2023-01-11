@@ -7,6 +7,8 @@ import {
     TextInput
 } from 'react-native'
 import { withNavigation } from 'react-navigation'
+import { connect } from 'react-redux'
+import { createUser } from '../store/actions/user'
 
 class Register extends Component {
     state = {
@@ -27,7 +29,9 @@ class Register extends Component {
                 <TextInput placeholder='Senha' style={styles.input}
                     secureTextEntry={true} value={this.state.password}
                     onChangeText={password => this.setState({ password })}/>
-                <TouchableOpacity onPress={() => { }} style={styles.buttom}>
+                <TouchableOpacity 
+                    onPress={() => { this.props.onCreateUser(this.state) }} 
+                    style={styles.buttom}>
                     <Text style={styles.buttomText}>Salvar</Text>
                 </TouchableOpacity>
             </View>
@@ -61,4 +65,10 @@ const styles = StyleSheet.create({
     }
 })
 
-export default withNavigation(Register);
+const mapDispatchToProps = dispatch => {
+    return {
+        onCreateUser: user => dispatch(createUser(user))
+    }
+}
+
+export default connect(null, mapDispatchToProps)(withNavigation(Register));

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Provider } from 'react-redux';
 import { AppRegistry } from 'react-native';
-import Navigator from './src/Navigator'
+import App from './src/App'
 import {name as appName} from './app.json';
 import * as Font from 'expo-font';
 import Axios from 'axios';
@@ -37,7 +37,7 @@ export default class Redux extends React.Component {
         }
         return (
             <Provider store={store}>
-                <Navigator/>
+                <App/>
             </Provider>
         )
     }
