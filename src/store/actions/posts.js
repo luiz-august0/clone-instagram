@@ -8,7 +8,7 @@ import { setMessage } from "./message";
 import Axios from "axios";
 
 export const addPost = post => {
-	return dispatch => {
+	return (dispatch, getState) => {
 		dispatch(creatingPost())
 		const image = new FormData()
 		image.append('image',{
@@ -31,7 +31,7 @@ export const addPost = post => {
 			})
 			.then(resp => {
 				post.image = resp.data.imageUrl
-				Axios.post('/posts.json', { ...post })
+				Axios.post(`/posts.json?auth=${getState().user.token}`, { ...post })
 					.catch(err => {
 						dispatch(setMessage({
 							title: 'Erro',
@@ -55,7 +55,7 @@ export const addPost = post => {
 }
 
 export const addComment = payload => {
-	return dispatch => {
+	return (dispatch, getState) => {
 		Axios.get(`/posts/${payload.postId}.json`)
 			.catch(err => {
 				dispatch(setMessage({
@@ -66,7 +66,7 @@ export const addComment = payload => {
 			.then(res => {
 				const comments = res.data.comments || []
 				comments.push(payload.comment)
-				Axios.patch(`/posts/${payload.postId}.json`, { comments })
+				Axios.patch(`/posts/${payload.postId}.json?auth=${getState().user.token}`, { comments })
 					.catch(err => console.log(err))
 					.then(res => {
 						dispatch(getPosts())

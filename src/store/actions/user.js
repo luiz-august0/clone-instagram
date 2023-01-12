@@ -25,6 +25,7 @@ export const logout = () => {
 
 export const createUser = (user) => {
     return dispatch => {
+        dispatch(loadingUser())
         Axios.post(`${authBaseUrl}/signupNewUser?key=${API_KEY}`, {
             email: user.email,
             password: user.password,
@@ -42,11 +43,8 @@ export const createUser = (user) => {
                         name: user.name
                     })
                         .catch(err => console.log(err))
-                        .then(res => {
-                            dispatch(setMessage({
-                                title: 'Sucesso',
-                                text: 'Usuário criado com sucesso!'
-                            }))
+                        .then(() => {
+                            dispatch(login(user))
                         })
                 }
             })
@@ -81,6 +79,7 @@ export const login = user => {
             })
             .then(res => {
                 if (res.data.localId) {
+                    user.token = res.data.idToken
                     Axios.get(`/users/${res.data.localId}.json`)
                         .catch(err =>{
                             dispatch(setMessage({
@@ -89,7 +88,7 @@ export const login = user => {
                             }))
                         })
                         .then(res => {
-                            user.password = null
+                            delete user.password
                             user.name = res.data.name
                             dispatch(userLogged(user))
                             dispatch(userLoaded())
